@@ -13,6 +13,7 @@ A lightweight iOS solution using **Scriptable** and **Shortcuts** to fetch and d
 ```
 └── README.md                   # This overview
     └── Borstei.js              # Scriptable departure notifier example script
+    └── Tram_global_ID.pdf              # you can find your designated station ID here
 ```
 
 ## Installation
@@ -20,7 +21,8 @@ A lightweight iOS solution using **Scriptable** and **Shortcuts** to fetch and d
 1. **Clone or download** this repo to your Mac/PC.
 2. **Open** `Borstei.js` and **copy** its contents.
 3. **Open Scriptable** on iOS, tap **+**, name script e.g. **Borstei** and paste code.
-4. Grant **Network** and **Notification** permissions when prompted.
+4. **Find and change STOP_ID**
+5. Grant **Network** and **Notification** permissions when prompted.
 
 ## Example Script Details (`Borstei.js`)
 
