@@ -12,7 +12,7 @@ A lightweight iOS solution using **Scriptable** and **Shortcuts** to fetch and d
 
 ```
 └── README.md                   # This overview
-    └── Borstei.js              # Scriptable departure notifier script
+    └── Borstei.js              # Scriptable departure notifier example script
 ```
 
 ## Installation
@@ -22,7 +22,7 @@ A lightweight iOS solution using **Scriptable** and **Shortcuts** to fetch and d
 3. **Open Scriptable** on iOS, tap **+**, name script e.g. **Borstei** and paste code.
 4. Grant **Network** and **Notification** permissions when prompted.
 
-## Script Details (`Borstei.js`)
+## Example Script Details (`Borstei.js`)
 
 - **Configuration**:
   ```js
