@@ -1,96 +1,61 @@
-# Munich Tram Arrival Notifier
+# Munich Tram Arrival Notifier (iOS)
 
-A simple Node.js/Scriptable project to fetch and notify upcoming tram departures from Munich's MVG API.
+A lightweight iOS solution using **Scriptable** and **Shortcuts** to fetch and display upcoming tram departures from Munich’s MVG API.
 
-## Features
+## Prerequisites
 
-- Query real-time tram departures for a given stop ID.
-- Output via console, Telegram, PushPlus, or iOS Scriptable notifications.
-- Support scheduled runs via GitHub Actions or on-demand via Shortcuts.
+- **Scriptable** app installed on iOS
+- **Shortcuts** app (built-in)
+- MVG stop ID (e.g. `de:09162:305`)
 
 ## Repository Structure
 
-```plaintext
-├── tram_notifier.js    # Core Node.js notifier script
-├── package.json        # Dependencies and scripts
-├── README.md           # Project overview and usage
-└── .github/
-    └── workflows/
-        └── tram.yml    # GitHub Actions schedule for automated notifications
+```
+└── README.md                   # This overview
+    └── tram_notifier.js        # Scriptable script
 ```
 
-## Getting Started
+## Installation
 
-### 1. Create the GitHub Repository
+1. **Clone or download** this repo to your Mac/PC.
+2. **Open** the `tram_notifier.js` file and **copy** its contents.
+3. **Open Scriptable** on your iOS device, tap **+** to create a new script, paste in the code, name it e.g. **Munich Tram**.
+4. **Grant necessary permissions** when prompted (network access).
 
-1. Log in to GitHub and click **New** repository.
-2. Name it `munich-tram-notifier` (or your preferred name).
-3. Initialize with a `README.md` and `.gitignore` for Node.
+## Script Explanation (`tram_notifier.js`)
 
-### 2. Clone Locally
-```bash
-git clone https://github.com/<your‑org>/munich-tram-notifier.git
-cd munich-tram-notifier
-```
+- **Fetches** MVG departures:
+  ```js
+  const stopId = "de:09162:305";
+  const url = `https://www.mvg.de/api/bgw-pt/v3/departures?globalId=${encodeURIComponent(stopId)}&transportTypes=TRAM&limit=5`;
+  ```
+- **Parses** JSON, formats each line label and departure time in **HH:mm** (HKT).
+- **Returns** a single output string via `Script.setShortcutOutput(output)` when run from Shortcuts.
+- **Displays** a Quick Look preview when run in-app.
 
-### 3. Install Dependencies
-```bash
-npm init -y
-npm install node-fetch
-```
+## Shortcut Setup
 
-### 4. Configure Secrets
-In GitHub ▶️ Settings ▶️ Secrets and variables ▶️ Actions, add:
-- `TRAM_STOP_ID` – MVG stop globalId (e.g. `de:09162:305`)
-- `TELEGRAM_TOKEN` & `TELEGRAM_CHAT_ID` (if using Telegram)
-- or `PUSHPLUS_TOKEN` (if using PushPlus)
+1. **Open Shortcuts** and create a new shortcut named **Tram ETA**.
+2. Add **Run Script** action:
+   - App: **Scriptable**
+   - Script: **Munich Tram**
+   - Turn **Off** "Show While Running"
+   - Enable **Pass Output to Shortcut**
+3. Add **Quick Look** (or **Show Result**) action:
+   - Input: **Shortcut Input**
+4. **Save** the shortcut.
 
-### 5. Core Script (`tram_notifier.js`)
-```js
-// tram_notifier.js
-typeof fetch === 'undefined' && (global.fetch = require('node-fetch'));
-const STOP_ID = process.env.TRAM_STOP_ID;
-async function main() {
-  const url = `https://www.mvg.de/api/bgw-pt/v3/departures?globalId=${encodeURIComponent(STOP_ID)}&transportTypes=TRAM&limit=5`;
-  const res = await fetch(url);
-  const list = await res.json();
-  const lines = list.map(i => `${i.label} → ${new Date(i.realtimeDepartureTime).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}`);
-  // Send via Telegram
-  await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: process.env.TELEGRAM_CHAT_ID, text: lines.join("\n") })
-  });
-}
-main();
-```
+## Usage
 
-### 6. GitHub Actions Workflow (`.github/workflows/tram.yml`)
-```yaml
-name: Munich Tram Notifier
-on:
-  schedule:
-    - cron: '*/15 * * * *'  # every 15 minutes
-jobs:
-  notify:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install dependencies
-        run: npm ci
-      - name: Run notifier
-        env:
-          TRAM_STOP_ID: ${{ secrets.TRAM_STOP_ID }}
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: node tram_notifier.js
-```
+- **In Scriptable**: Tap the script → shows a scrollable Quick Look of next tram times.
+- **In Shortcuts**: Run **Tram ETA** from the Shortcuts app, Today Widget, or via Siri voice command—displays full list.
 
-## Usage on iOS (Scriptable)
+## Customization
 
-Copy `tram_notifier.js` into Scriptable, adapt fetch and notification code, then run via Shortcuts with a **Quick Look** or **Show Result** to display departures.
+- Change `stopId` in the script to any MVG stop globalId.
+- Adjust `limit` to show more or fewer upcoming departures.
 
 ---
 
-Happy commuting! 🚋
+Built with ❤️ using Scriptable & Shortcuts.
 
