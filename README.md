@@ -13,7 +13,7 @@ A lightweight iOS solution using **Scriptable** and **Shortcuts** to fetch and d
 ```
 └── README.md                   # This overview
     └── Borstei.js              # Scriptable departure notifier example script
-    └── Tram_global_ID.pdf              # you can find your designated station ID here
+    └── Tram_global_ID.pdf      # you can find your designated station ID here
 ```
 
 ## Installation
